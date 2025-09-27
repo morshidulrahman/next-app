@@ -1,30 +1,42 @@
 "use server";
 
+import x_axios from "@/lib/axios";
+import { cookies } from "next/headers";
+
 const login = async ({ email, password }) => {
-  const res = await fetch(`http://localhost:4000/api/v1/auth/login/employee`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  });
+  try {
+    const res = await x_axios.post("/api/v1/auth/login/employee", {
+      email,
+      password,
+    });
 
-  if (!res.ok) {
-    throw new Error("Login failed");
+    const result = res.data?.data;
+
+    if (result) {
+      const cookieStore = await cookies();
+      if (result.token) {
+        cookieStore.set("remote-ui-jwt", result.token, {
+          httpOnly: true,
+          path: "/",
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 60 * 60 * 24 * 7,
+        });
+      }
+
+      if (result.employee) {
+        cookieStore.set("remote-ui-profile", JSON.stringify(result.employee), {
+          httpOnly: true,
+          path: "/",
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 60 * 60 * 24 * 7,
+        });
+      }
+      return { success: true, result };
+    }
+    return { success: true, data: res.data };
+  } catch (err) {
+    console.log(err);
   }
-
-  const data = await res.json();
-  return data;
 };
 
 export { login };
-
-const fetchtodo = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/todos/1")
-    .then((response) => response.json())
-    .then((res) => res)
-    .catch((error) => console.error("Error fetching todo:", error));
-  return res;
-};
-
-export { fetchtodo };

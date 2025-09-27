@@ -45,8 +45,15 @@ const Login = () => {
         password: formData.password,
       });
 
-      console.log("Login successful:", result);
-      //   router.push("/dashboard");
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirect = searchParams.get("redirect");
+      const target = searchParams.get("target");
+
+      if (redirect === "true" && target) {
+        router.push(`/${target}`);
+      } else {
+        router.push("/");
+      }
     } catch (err) {
       console.error("Login error:", err);
     }
@@ -130,10 +137,7 @@ const Login = () => {
                   </p>
                 </motion.div>
 
-                <form
-                  onSubmit={handleSubmit(e, formData)}
-                  className="space-y-6"
-                >
+                <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Email */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
