@@ -2,6 +2,10 @@
 
 import x_axios_crm from "@/lib/axiosCrm";
 import x_axios_tracker from "@/lib/axiosTracker";
+import {
+  getFloridaDateRangeFromLocalDates,
+  getUTCDateRangeForLocalDates,
+} from "@/utils/timezone";
 import { revalidatePath } from "next/cache";
 
 // Get sessions with filters
@@ -111,6 +115,136 @@ export async function getEmployeeProfile(employeeId) {
       error:
         error.response?.data?.message || "Failed to fetch employee profile",
       data: null,
+    };
+  }
+}
+
+// Get calendar stats for a specific month
+export async function getCalendarStats({ employeeId, year, month, timezone }) {
+  try {
+    const response = await x_axios_tracker.get(
+      `/api/v1/sessions/calendar?employeeId=${employeeId}&year=${year}&month=${String(
+        month
+      ).padStart(2, "0")}&timezone=${timezone}`
+    );
+
+    return {
+      success: true,
+      data: response.data.data || {},
+    };
+  } catch (error) {
+    console.error("Error fetching calendar stats:", error);
+    return {
+      success: false,
+      error: error.response?.data?.message || "Failed to fetch calendar stats",
+      data: {},
+    };
+  }
+}
+
+// Get sessions for a specific day
+export async function getDaySessions({ employeeId, startUTC, endUTC }) {
+  try {
+    const response = await x_axios_tracker.get(
+      `/api/v1/sessions?employeeId=${employeeId}&startDate=${startUTC}&endDate=${endUTC}`
+    );
+
+    return {
+      success: true,
+      data: response.data.data || [],
+    };
+  } catch (error) {
+    console.error("Error fetching day sessions:", error);
+    return {
+      success: false,
+      error: error.response?.data?.message || "Failed to fetch day sessions",
+      data: [],
+    };
+  }
+}
+
+// Get weekly calendar stats with sessions grouped by day
+export async function getWeeklyCalendarStats({
+  employeeId,
+  startDate,
+  endDate,
+  timezone,
+}) {
+  try {
+    // Convert date range using timezone utilities
+    const { startUTC, endUTC } =
+      timezone === "America/New_York"
+        ? getFloridaDateRangeFromLocalDates(startDate, endDate)
+        : getUTCDateRangeForLocalDates(startDate, endDate);
+
+    const response = await x_axios_tracker.get(
+      `/api/v1/sessions?employeeId=${employeeId}&startDate=${startUTC}&endDate=${endUTC}&page=1&limit=1000&sortBy=startTime&order=desc`
+    );
+
+    const sessions = response.data.data || [];
+
+    // Group sessions by day in selected timezone
+    const grouped = {};
+    sessions.forEach((session) => {
+      const sessionDate = new Date(session.startTime);
+      let localDateString;
+
+      if (timezone === "America/New_York") {
+        const formatter = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "America/New_York",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+        localDateString = formatter.format(sessionDate);
+      } else {
+        const formatter = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "Asia/Dhaka",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+        localDateString = formatter.format(sessionDate);
+      }
+
+      if (!grouped[localDateString]) {
+        grouped[localDateString] = {
+          totalActiveTime: 0,
+          totalIdleTime: 0,
+          totalTime: 0,
+          activePercentage: 0,
+          sessions: [],
+        };
+      }
+
+      grouped[localDateString].totalActiveTime += session.activeTime || 0;
+      grouped[localDateString].totalIdleTime += session.idleTime || 0;
+      grouped[localDateString].totalTime +=
+        (session.activeTime || 0) + (session.idleTime || 0);
+      grouped[localDateString].sessions.push(session);
+    });
+
+    // Calculate percentages
+    Object.keys(grouped).forEach((date) => {
+      const dayData = grouped[date];
+      dayData.activePercentage =
+        dayData.totalTime > 0
+          ? Math.round((dayData.totalActiveTime / dayData.totalTime) * 100)
+          : 0;
+    });
+
+    return {
+      success: true,
+      data: grouped,
+    };
+  } catch (error) {
+    console.error("Error fetching weekly calendar stats:", error);
+    return {
+      success: false,
+      error:
+        error.response?.data?.message ||
+        "Failed to fetch weekly calendar stats",
+      data: {},
     };
   }
 }

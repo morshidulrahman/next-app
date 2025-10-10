@@ -19,21 +19,16 @@ import { HiMiniXMark } from "react-icons/hi2";
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import { useRouter } from "next/navigation";
 
-import CalendarView from "./sessions/CalendarView";
-import SessionDetailsModal from "./sessions/SessionDetailsModal";
-import DaySessionsModal from "./sessions/DaySessionsModal";
-import DateRangeSelector from "./sessions/DateRangeSelector";
-import SortFilterDropdown from "./sessions/SortFilterDropdown";
-import ViewModeSelector from "./sessions/ViewModeSelector";
-import TimelineView from "./sessions/TimelineView";
-import WeeklyCalendarView from "./sessions/WeeklyCalendarView";
-import FormattedTime from "../common/FormattedTime";
+import CalendarView from "./CalendarView";
+import SessionDetailsModal from "./SessionDetailsModal";
+import DaySessionsModal from "./DaySessionsModal";
+import DateRangeSelector from "./DateRangeSelector";
+import SortFilterDropdown from "./SortFilterDropdown";
+import ViewModeSelector from "./ViewModeSelector";
+import TimelineView from "./TimelineView";
+import WeeklyCalendarView from "./WeeklyCalendarView";
 
-import {
-  getUTCDateRangeForLocalDates,
-  getFloridaDateRangeFromLocalDates,
-} from "../../utils/timezoneUtils";
-import { deleteSession } from "@/actions/sessions";
+import FormattedTime from "./FormattedTime";
 
 // Format time from seconds to hours and minutes
 export const formatTime = (seconds) => {
@@ -53,13 +48,7 @@ export const formatDateDisplay = (dateString, timezone = null) => {
   }
 };
 
-const SessionsList = ({
-  initialData,
-  employee,
-  user,
-  projectId,
-  organizationId,
-}) => {
+const SessionsList = ({ initialData, employee, user }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -690,7 +679,7 @@ const SessionsList = ({
       )}
 
       {/* Calendar View */}
-      {/* {viewMode === "calendar" && (
+      {viewMode === "calendar" && (
         <CalendarView
           sessions={displaySessions}
           timezone={timezone}
@@ -703,10 +692,10 @@ const SessionsList = ({
           currentStartDate={startDate}
           currentEndDate={endDate}
         />
-      )} */}
+      )}
 
       {/* Weekly Calendar View */}
-      {/* {viewMode === "weekly" && (
+      {viewMode === "weekly" && (
         <WeeklyCalendarView
           startDate={startDate}
           endDate={endDate}
@@ -717,10 +706,10 @@ const SessionsList = ({
           setSelectedDate={setSelectedDate}
           setShowDaySessionsModal={setShowDaySessionsModal}
         />
-      )} */}
+      )}
 
       {/* Session Details Modal */}
-      {/* {showDetailsModal && selectedSession && (
+      {showDetailsModal && selectedSession && (
         <SessionDetailsModal
           session={selectedSession}
           user={user}
@@ -728,10 +717,10 @@ const SessionsList = ({
           onDelete={handleDeleteSession}
           timezone={timezone}
         />
-      )} */}
+      )}
 
       {/* Day Sessions Modal */}
-      {/* {showDaySessionsModal && (
+      {showDaySessionsModal && (
         <DaySessionsModal
           sessions={selectedDaySessions}
           date={selectedDate}
@@ -742,7 +731,7 @@ const SessionsList = ({
             handleViewSession(session);
           }}
         />
-      )} */}
+      )}
     </div>
   );
 };

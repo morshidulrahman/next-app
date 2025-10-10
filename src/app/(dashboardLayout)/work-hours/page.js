@@ -1,6 +1,7 @@
 // app/sessions/page.js
 import { getEmployeeProfile, getSessions } from "@/actiions/session";
 import { SessionsError } from "@/components/dashboard/session/SessionsError";
+import SessionsList from "@/components/dashboard/session/SessionsList";
 import { SessionsLoading } from "@/components/dashboard/session/SessionsLoading";
 import { useProfile } from "@/lib/useProfile";
 import {
@@ -58,18 +59,14 @@ async function SessionsContent({ searchParams }) {
       throw new Error(sessionsResult.error);
     }
 
-    console.log("sessionsResult", sessionsResult);
-    console.log("employeeResult", employeeResult);
-
     return (
-      <h1>hello</h1>
-      // <SessionsList
-      //   initialData={sessionsResult.data}
-      //   employee={employeeResult.data}
-      //   user={profile}
-      //   projectId={params.projectId}
-      //   organizationId={params.organizationId}
-      // />
+      <SessionsList
+        initialData={sessionsResult.data}
+        employee={employeeResult.data}
+        user={profile}
+        projectId={params.projectId}
+        organizationId={params.organizationId}
+      />
     );
   } catch (error) {
     console.error("Error loading sessions:", error);
