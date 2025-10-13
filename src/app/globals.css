@@ -34,8 +34,7 @@
   --foreground: #171717;
 
   /* Fonts */
-  --font-sans: var(--font-geist-sans, Arial, Helvetica, sans-serif);
-  --font-mono: var(--font-geist-mono, monospace);
+  --font-sans: var(--font-public-sans);
 
   /* Primary color system */
   --primary-50: var(--color-primary-50);

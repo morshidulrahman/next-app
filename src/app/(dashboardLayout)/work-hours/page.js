@@ -59,8 +59,6 @@ async function SessionsContent({ searchParams }) {
       throw new Error(sessionsResult.error);
     }
 
-    console.log(sessionsResult.data.statistics, "k");
-
     return (
       <SessionsList
         initialData={sessionsResult.data}
