@@ -75,52 +75,67 @@ const SessionsList = ({ initialData, employee, user }) => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
+  // Handle preset date ranges automatically
+  useEffect(() => {
+    // Skip if dateRange is custom (user manually sets dates)
+    if (dateRange === "custom") return;
+
+    const today = new Date();
+
+    switch (dateRange) {
+      case "today": {
+        const todayDate = format(today, "yyyy-MM-dd");
+        setStartDate(todayDate);
+        setEndDate(todayDate);
+        break;
+      }
+
+      case "yesterday": {
+        const yesterday = subDays(today, 1);
+        const yesterdayDate = format(yesterday, "yyyy-MM-dd");
+        setStartDate(yesterdayDate);
+        setEndDate(yesterdayDate);
+        break;
+      }
+
+      case "week": {
+        const weekStart = subDays(today, 6);
+        setStartDate(format(weekStart, "yyyy-MM-dd"));
+        setEndDate(format(today, "yyyy-MM-dd"));
+        break;
+      }
+
+      case "month": {
+        const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        setStartDate(format(monthStart, "yyyy-MM-dd"));
+        setEndDate(format(today, "yyyy-MM-dd"));
+        break;
+      }
+
+      default:
+        break;
+    }
+  }, [dateRange]);
+
   // Handle view mode change
   const handleViewModeChange = (newViewMode) => {
     if (dateRange === "custom" && newViewMode === "calendar") {
       setViewMode("weekly");
       return;
-    } else if (newViewMode === "calendar" && viewMode !== "calendar") {
+    }
+
+    if (newViewMode === "calendar" && viewMode !== "calendar") {
+      // Switching TO calendar view
       setPreviousDateRange(dateRange);
       setDateRange("month");
-
-      const today = new Date();
-      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-      setStartDate(format(monthStart, "yyyy-MM-dd"));
-      setEndDate(format(today, "yyyy-MM-dd"));
+      // Dates will be set by the useEffect above
     } else if (
       viewMode === "calendar" &&
       (newViewMode === "list" || newViewMode === "timeline")
     ) {
+      // Switching FROM calendar view
       setDateRange(previousDateRange);
-
-      const today = new Date();
-      switch (previousDateRange) {
-        case "today":
-          setStartDate(format(today, "yyyy-MM-dd"));
-          setEndDate(format(today, "yyyy-MM-dd"));
-          break;
-        case "yesterday": {
-          const yesterday = subDays(today, 1);
-          setStartDate(format(yesterday, "yyyy-MM-dd"));
-          setEndDate(format(yesterday, "yyyy-MM-dd"));
-          break;
-        }
-        case "week": {
-          const weekStart = subDays(today, 6);
-          setStartDate(format(weekStart, "yyyy-MM-dd"));
-          setEndDate(format(today, "yyyy-MM-dd"));
-          break;
-        }
-        case "month": {
-          const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-          setStartDate(format(monthStart, "yyyy-MM-dd"));
-          setEndDate(format(today, "yyyy-MM-dd"));
-          break;
-        }
-        default:
-          break;
-      }
+      // Dates will be set by the useEffect above
     }
 
     setViewMode(newViewMode);
@@ -167,6 +182,7 @@ const SessionsList = ({ initialData, employee, user }) => {
     sortField,
     sortOrder,
     timezone,
+    router,
   ]);
 
   // Handle delete session
@@ -286,7 +302,7 @@ const SessionsList = ({ initialData, employee, user }) => {
             <div>
               <p className="text-sm text-gray-500">Total Time</p>
               <h3 className="text-2xl font-bold text-gray-900">
-                {formatTime(totalTime)}
+                {formatTime(totalTime || 0)}
               </h3>
             </div>
             <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -300,7 +316,7 @@ const SessionsList = ({ initialData, employee, user }) => {
             <div>
               <p className="text-sm text-gray-500">Active Time</p>
               <h3 className="text-2xl font-bold text-gray-900">
-                {formatTime(totalActiveTime)}
+                {formatTime(totalActiveTime || 0)}
               </h3>
             </div>
             <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -314,7 +330,7 @@ const SessionsList = ({ initialData, employee, user }) => {
             <div>
               <p className="text-sm text-gray-500">Idle Time</p>
               <h3 className="text-2xl font-bold text-gray-900">
-                {formatTime(totalIdleTime)}
+                {formatTime(totalIdleTime || 0)}
               </h3>
             </div>
             <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
@@ -328,7 +344,7 @@ const SessionsList = ({ initialData, employee, user }) => {
             <div>
               <p className="text-sm text-gray-500">Productivity</p>
               <h3 className="text-2xl font-bold text-gray-900">
-                {activePercentage}%
+                {activePercentage || 0}%
               </h3>
             </div>
             <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
@@ -337,8 +353,8 @@ const SessionsList = ({ initialData, employee, user }) => {
           </div>
           <div className="mt-2 w-full h-2 bg-gray-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-indigo-600"
-              style={{ width: `${activePercentage}%` }}
+              className="h-full bg-indigo-600 transition-all duration-300"
+              style={{ width: `${activePercentage || 0}%` }}
             ></div>
           </div>
         </div>
@@ -531,13 +547,16 @@ const SessionsList = ({ initialData, employee, user }) => {
       )}
 
       {/* Pagination for List View */}
-      {viewMode === "list" && (
+      {viewMode === "list" && displaySessions.length > 0 && (
         <div className="flex items-center justify-between px-6 py-4 border border-t-0 border-gray-300 bg-white rounded-b-[4px]">
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">Show</span>
             <select
               value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}
+              onChange={(e) => {
+                setLimit(Number(e.target.value));
+                setPage(1); // Reset to first page when changing limit
+              }}
               className="px-2 py-1 border border-gray-300 rounded-[4px] bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={isPending}
             >
@@ -608,13 +627,16 @@ const SessionsList = ({ initialData, employee, user }) => {
       )}
 
       {/* Pagination for Timeline View */}
-      {viewMode === "timeline" && (
+      {viewMode === "timeline" && displaySessions.length > 0 && (
         <div className="flex items-center justify-between px-6 py-4 border border-t-0 border-gray-300 bg-white rounded-b-[4px]">
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">Show</span>
             <select
               value={limit}
-              onChange={(e) => setLimit(Number(e.target.value))}
+              onChange={(e) => {
+                setLimit(Number(e.target.value));
+                setPage(1);
+              }}
               className="px-2 py-1 border border-gray-300 rounded-[4px] bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={isPending}
             >
@@ -706,7 +728,6 @@ const SessionsList = ({ initialData, employee, user }) => {
         />
       )}
 
-      {/* Session Details Modal */}
       {showDetailsModal && selectedSession && (
         <SessionDetailsModal
           session={selectedSession}

@@ -28,7 +28,7 @@ const TimelineView = ({ sessions, onViewSession, timezone }) => {
           key={date}
           className="overflow-hidden bg-white shadow-md rounded-[4px]"
         >
-          <div className="border-b bg-gray-50 px-4 py-3">
+          <div className="border-b bg-gray-50 border-b-gray-300 px-4 py-3">
             <h3 className="font-medium text-gray-900 text-md">
               {format(new Date(date), "EEEE, MMMM d, yyyy")}
             </h3>
@@ -56,10 +56,10 @@ const TimelineView = ({ sessions, onViewSession, timezone }) => {
                       {/* Session card */}
                       <div className="ml-12 flex-grow">
                         <div
-                          className="cursor-pointer border transition-shadow rounded-[4px] hover:shadow-md"
+                          className="cursor-pointer border border-gray-300 transition-shadow rounded-[4px] hover:shadow-md"
                           onClick={() => onViewSession(session)}
                         >
-                          <div className="flex items-center justify-between border-b bg-gray-50 p-3">
+                          <div className="flex items-center justify-between border-b border-gray-300 bg-gray-50 p-3">
                             <div className="flex items-center">
                               <Clock size={16} className="mr-2 text-blue-600" />
 

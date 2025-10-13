@@ -110,6 +110,23 @@ const WeeklyCalendarView = ({
     return date >= start && date <= end;
   };
 
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center py-4 mb-4">
+        <div className="flex space-x-2">
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+          <div
+            className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+            style={{ animationDelay: "0.1s" }}
+          ></div>
+          <div
+            className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+            style={{ animationDelay: "0.2s" }}
+          ></div>
+        </div>
+      </div>
+    );
+
   return (
     <div className="bg-white rounded-[4px] shadow-md p-4">
       <div className="flex justify-between items-center mb-4">
@@ -118,22 +135,6 @@ const WeeklyCalendarView = ({
           {format(parseISO(endDate), "MMMM dd, yyyy")} ({timezone})
         </h3>
       </div>
-
-      {isLoading && (
-        <div className="flex justify-center items-center py-4 mb-4">
-          <div className="flex space-x-2">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-            <div
-              className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
-              style={{ animationDelay: "0.1s" }}
-            ></div>
-            <div
-              className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
-              style={{ animationDelay: "0.2s" }}
-            ></div>
-          </div>
-        </div>
-      )}
 
       <div className="grid grid-cols-7 gap-1">
         {/* Day names */}
