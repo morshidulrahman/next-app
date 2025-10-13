@@ -18,7 +18,6 @@ import { IoMdCheckmark } from "react-icons/io";
 import { HiMiniXMark } from "react-icons/hi2";
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import { useRouter } from "next/navigation";
-
 import CalendarView from "./CalendarView";
 import SessionDetailsModal from "./SessionDetailsModal";
 import DaySessionsModal from "./DaySessionsModal";
@@ -27,7 +26,6 @@ import SortFilterDropdown from "./SortFilterDropdown";
 import ViewModeSelector from "./ViewModeSelector";
 import TimelineView from "./TimelineView";
 import WeeklyCalendarView from "./WeeklyCalendarView";
-
 import FormattedTime from "./FormattedTime";
 
 // Format time from seconds to hours and minutes
@@ -53,7 +51,6 @@ const SessionsList = ({ initialData, employee, user }) => {
   const [isPending, startTransition] = useTransition();
 
   // State
-  const [sessionsData, setSessionsData] = useState(initialData);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState("list");
   const [sortField, setSortField] = useState("startTime");
@@ -193,9 +190,9 @@ const SessionsList = ({ initialData, employee, user }) => {
     setShowDetailsModal(true);
   };
 
-  const displaySessions = sessionsData?.sessions || [];
+  const displaySessions = initialData?.sessions || [];
   const { totalActiveTime, totalIdleTime, totalTime, activePercentage } =
-    sessionsData?.statistics || {};
+    initialData?.statistics || {};
 
   return (
     <div className="p-2 space-y-0">
@@ -554,8 +551,8 @@ const SessionsList = ({ initialData, employee, user }) => {
 
           <div className="text-sm text-gray-700">
             Showing {(page - 1) * limit + 1} to{" "}
-            {Math.min(page * limit, sessionsData.metadata?.totalSessions || 0)}{" "}
-            of {sessionsData.metadata?.totalSessions || 0} entries
+            {Math.min(page * limit, initialData?.metadata?.totalSessions || 0)}{" "}
+            of {initialData?.metadata?.totalSessions || 0} entries
           </div>
 
           <div className="flex gap-2">
@@ -567,7 +564,7 @@ const SessionsList = ({ initialData, employee, user }) => {
               Previous
             </button>
 
-            {[...Array(sessionsData.metadata?.totalPages || 0)].map(
+            {[...Array(initialData?.metadata?.totalPages || 0)].map(
               (_, idx) => (
                 <button
                   key={idx + 1}
@@ -587,11 +584,11 @@ const SessionsList = ({ initialData, employee, user }) => {
             <button
               onClick={() =>
                 setPage((p) =>
-                  Math.min(sessionsData.metadata?.totalPages || 1, p + 1)
+                  Math.min(initialData?.metadata?.totalPages || 1, p + 1)
                 )
               }
               disabled={
-                page === (sessionsData.metadata?.totalPages || 1) || isPending
+                page === (initialData?.metadata?.totalPages || 1) || isPending
               }
               className="px-4 py-2 border border-gray-300 rounded-[4px] disabled:opacity-50 disabled:cursor-not-allowed bg-white text-gray-700 hover:bg-gray-50"
             >
@@ -631,8 +628,8 @@ const SessionsList = ({ initialData, employee, user }) => {
 
           <div className="text-sm text-gray-700">
             Showing {(page - 1) * limit + 1} to{" "}
-            {Math.min(page * limit, sessionsData.metadata?.totalSessions || 0)}{" "}
-            of {sessionsData.metadata?.totalSessions || 0} entries
+            {Math.min(page * limit, initialData?.metadata?.totalSessions || 0)}{" "}
+            of {initialData?.metadata?.totalSessions || 0} entries
           </div>
 
           <div className="flex gap-2">
@@ -644,7 +641,7 @@ const SessionsList = ({ initialData, employee, user }) => {
               Previous
             </button>
 
-            {[...Array(sessionsData.metadata?.totalPages || 0)].map(
+            {[...Array(initialData?.metadata?.totalPages || 0)].map(
               (_, idx) => (
                 <button
                   key={idx + 1}
@@ -664,11 +661,11 @@ const SessionsList = ({ initialData, employee, user }) => {
             <button
               onClick={() =>
                 setPage((p) =>
-                  Math.min(sessionsData.metadata?.totalPages || 1, p + 1)
+                  Math.min(initialData?.metadata?.totalPages || 1, p + 1)
                 )
               }
               disabled={
-                page === (sessionsData.metadata?.totalPages || 1) || isPending
+                page === (initialData?.metadata?.totalPages || 1) || isPending
               }
               className="px-4 py-2 border border-gray-300 rounded-[4px] disabled:opacity-50 disabled:cursor-not-allowed bg-white text-gray-700 hover:bg-gray-50"
             >
@@ -691,6 +688,7 @@ const SessionsList = ({ initialData, employee, user }) => {
           setEndDate={setEndDate}
           currentStartDate={startDate}
           currentEndDate={endDate}
+          employeeId={employee?.employeeId || user?.employeeId}
         />
       )}
 

@@ -15,7 +15,7 @@ const SessionDetailsModal = ({ session, onClose, onDelete, timezone }) => {
   const idlePercentage = Math.round((session.idleTime / totalTime) * 100);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 transition-all overflow-y-auto">
+    <div className="fixed inset-0 bg-black/30 bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 transition-all overflow-y-auto">
       <div className="bg-white rounded-[4px] shadow-xl p-6 max-w-4xl w-full h-[calc(100vh-200px)] mx-4 my-8 transform transition-all duration-300 ease-out overflow-hidden">
         <div className="overflow-y-scroll h-full pr-2">
           <div className="flex justify-between items-center border-b pb-4 mb-4">

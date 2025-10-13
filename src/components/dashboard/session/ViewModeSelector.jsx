@@ -7,7 +7,7 @@ const ViewModeSelector = ({ viewMode, setViewMode }) => {
       <label className="block text-sm font-medium text-gray-700 mb-1">
         View Mode
       </label>
-      <div className="flex border rounded-[4px] overflow-hidden">
+      <div className="flex border rounded-[4px] overflow-hidden border-gray-300">
         <button
           className={`flex items-center justify-center px-[12px] py-[10.5px] text-sm ${
             viewMode === "list"

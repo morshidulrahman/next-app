@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export const privateRoutes = ["/dashboard"];
+export const privateRoutes = ["/dashboard*"];
 
 const redirectUrl = (req, pathname) => {
   let target = pathname;
@@ -51,8 +51,6 @@ export async function middleware(req) {
         },
       }
     );
-
-    console.log(apiResponse.ok, apiResponse.status);
 
     if (apiResponse.ok) {
       const data = await apiResponse.json();

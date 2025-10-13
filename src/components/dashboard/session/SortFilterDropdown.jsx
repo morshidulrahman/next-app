@@ -35,7 +35,7 @@ const SortFilterDropdown = ({
         Sort By
       </label>
       <div
-        className="flex items-center cursor-pointer text-[14px] leading-[20.125px] relative rounded-[4px] border px-[12px] py-[10.5px] bg-white focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all"
+        className="flex items-center border-gray-300 cursor-pointer text-[14px] leading-[20.125px] relative rounded-[4px] border px-[12px] py-[10.5px] bg-white focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-500 transition-all"
         tabIndex={0}
         onClick={() => setIsSortOpen(!isSortOpen)}
       >

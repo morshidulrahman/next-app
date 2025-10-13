@@ -10,7 +10,7 @@ import {
 } from "date-fns";
 import { FiActivity, FiTrendingUp } from "react-icons/fi";
 import { toast } from "sonner";
-import { getWeeklyCalendarStats } from "@/actions/sessions";
+import { getWeeklyCalendarStats } from "@/actiions/session";
 
 // Format time from seconds to hours and minutes
 const formatTime = (seconds) => {
@@ -172,9 +172,7 @@ const WeeklyCalendarView = ({
               };
 
               const handleDayClick = async () => {
-                if (!isInRange || dayStats.totalTime === 0 || isPending) return;
-
-                console.log("Selected date:", dayKey);
+                if (!isInRange || dayStats.totalTime === 0) return;
 
                 try {
                   // Use the sessions already fetched and grouped
@@ -209,7 +207,7 @@ const WeeklyCalendarView = ({
                         ? "opacity-40 cursor-not-allowed"
                         : "cursor-pointer"
                     }
-                    ${isPending ? "opacity-50 cursor-wait" : ""}
+              
                     hover:shadow-md
                   `}
                 >

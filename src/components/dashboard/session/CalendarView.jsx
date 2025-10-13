@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { FiActivity, FiTrendingUp } from "react-icons/fi";
 import { toast } from "sonner";
-import { getCalendarStats, getDaySessions } from "@/actions/sessions";
+import { getCalendarStats, getDaySessions } from "@/actiions/session";
 
 // Format time from seconds to hours and minutes
 const formatTime = (seconds) => {
@@ -130,6 +130,24 @@ const CalendarView = ({
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-8">
+        <div className="flex space-x-2">
+          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+          <div
+            className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+            style={{ animationDelay: "0.1s" }}
+          ></div>
+          <div
+            className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+            style={{ animationDelay: "0.2s" }}
+          ></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-[4px] shadow-md p-4">
       <div className="flex justify-between items-center mb-4">
@@ -154,22 +172,6 @@ const CalendarView = ({
         </div>
       </div>
 
-      {isLoading && (
-        <div className="flex justify-center items-center py-8">
-          <div className="flex space-x-2">
-            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-            <div
-              className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
-              style={{ animationDelay: "0.1s" }}
-            ></div>
-            <div
-              className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
-              style={{ animationDelay: "0.2s" }}
-            ></div>
-          </div>
-        </div>
-      )}
-
       <div className="grid grid-cols-7 gap-1">
         {/* Day names */}
         {dayNames.map((day) => (
@@ -185,7 +187,7 @@ const CalendarView = ({
         {Array.from({ length: firstDayOfMonth }).map((_, index) => (
           <div
             key={`empty-${index}`}
-            className="h-24 border rounded-[4px] bg-gray-50"
+            className="h-24 border rounded-[4px] border-gray-300"
           ></div>
         ))}
 
@@ -207,22 +209,17 @@ const CalendarView = ({
           };
 
           const handleDayClick = async () => {
-            if (isPending) return;
+            // if (isPending) return;
 
             const selectedDate = `${year}-${String(month + 1).padStart(
               2,
               "0"
             )}-${String(day).padStart(2, "0")}`;
 
-            console.log("Selected date:", selectedDate);
-
             const { startUTC, endUTC } =
               timezone === "America/New_York"
                 ? getFloridaDateRangeFromLocalDate(selectedDate)
                 : getUTCDateRangeForLocalDate(selectedDate);
-
-            console.log("Start UTC:", startUTC);
-            console.log("End UTC:", endUTC);
 
             startTransition(async () => {
               const result = await getDaySessions({
@@ -246,7 +243,7 @@ const CalendarView = ({
               key={`day-${day}`}
               onClick={handleDayClick}
               className={`
-                h-32 border rounded-[4px] p-2 cursor-pointer transition-all duration-200 
+                h-32 border border-gray-300 rounded-[4px] p-2 cursor-pointer transition-all duration-200 
                 flex flex-col justify-between
                 ${
                   isToday
@@ -259,7 +256,6 @@ const CalendarView = ({
                     : "border-gray-200"
                 }
                 hover:shadow-md
-                ${isPending ? "opacity-50 cursor-wait" : ""}
               `}
             >
               {/* Top Row: Day Number */}

@@ -1,3 +1,4 @@
+"use server";
 import x_axios_tracker from "@/lib/axiosTracker";
 import { formatError } from "@/lib/utils";
 

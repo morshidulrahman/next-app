@@ -7,7 +7,6 @@ import {
   get_monthly_calender_data,
   get_monthly_stas,
 } from "@/actiions/working";
-import { getEmployeeProfile } from "@/actiions/session";
 
 async function DashboardContent() {
   try {
@@ -16,10 +15,6 @@ async function DashboardContent() {
     if (!profile?.employeeId) {
       throw new Error("Employee ID not found");
     }
-
-    const userData = await getEmployeeProfile(profile.employeeId);
-    console.log("userData", userData);
-    console.log("profile", profile);
 
     const [monthly_statsData, monthly_calenderData] = await Promise.all([
       get_monthly_stas(profile.employeeId),

@@ -29,9 +29,9 @@ const DaySessionsModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-40 transition-all overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-xs bg-opacity-50 flex items-center justify-center z-40 transition-all overflow-y-auto">
       <div className="bg-white rounded-[4px] shadow-xl p-6 max-w-2xl w-full max-h-[80vh] mx-4 my-8 transform transition-all duration-300 ease-out overflow-hidden">
-        <div className="flex justify-between items-center border-b pb-4 mb-4">
+        <div className="flex justify-between items-center border-b border-b-gray-300 pb-4 mb-4">
           <h3 className="text-xl font-semibold text-gray-900">
             Sessions for {format(localDate, "MMMM d, yyyy")}
             {timezone && (
@@ -40,7 +40,7 @@ const DaySessionsModal = ({
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
           >
             <X size={20} />
           </button>
@@ -51,7 +51,7 @@ const DaySessionsModal = ({
             <div
               key={session._id}
               onClick={() => onViewSession(session)}
-              className="p-4 border rounded-[4px] hover:shadow-md transition-shadow cursor-pointer hover:bg-gray-50"
+              className="p-4 border border-gray-300 rounded-[4px] hover:shadow-md transition-shadow cursor-pointer hover:bg-gray-50"
             >
               <div className="flex justify-between items-start mb-2">
                 <div className="flex items-center">
