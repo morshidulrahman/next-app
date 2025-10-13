@@ -39,4 +39,16 @@ const login = async ({ email, password }) => {
   }
 };
 
-export { login };
+async function auth_logout() {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.delete("remote-ui-jwt");
+    cookieStore.delete("remote-ui-profile");
+    return { success: true };
+  } catch (error) {
+    console.error("Logout failed:", error);
+    return { success: false, error: "Logout failed" };
+  }
+}
+
+export { login, auth_logout };
