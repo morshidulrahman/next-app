@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect, useTransition, useRef } from "react";
 import { toast } from "sonner";
 import { format, subDays } from "date-fns";
 import {
@@ -156,17 +156,23 @@ const SessionsList = ({ initialData, employee, user }) => {
     }
   }, [dateRange]);
 
-  // Refresh data when filters change
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     const params = new URLSearchParams();
     if (startDate) params.set("startDate", startDate);
     if (endDate) params.set("endDate", endDate);
-    if (isManual) params.set("isManual", "true");
-    if (searchTerm) params.set("search", searchTerm);
-    if (page) params.set("page", page.toString());
-    if (limit) params.set("limit", limit.toString());
-    if (sortField) params.set("sortBy", sortField);
-    if (sortOrder) params.set("order", sortOrder);
+    if (isManual) params.set("isManual", isManual);
+    if (searchTerm) params.set("searchTerm", searchTerm);
+    if (page) params.set("page", page);
+    if (limit) params.set("limit", limit);
+    if (sortField) params.set("sortField", sortField);
+    if (sortOrder) params.set("sortOrder", sortOrder);
     if (timezone) params.set("timezone", timezone);
 
     startTransition(() => {
@@ -182,7 +188,6 @@ const SessionsList = ({ initialData, employee, user }) => {
     sortField,
     sortOrder,
     timezone,
-    router,
   ]);
 
   // Handle delete session
