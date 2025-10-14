@@ -26,6 +26,8 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const router = useRouter();
 
@@ -39,23 +41,38 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    
+    console.log("Form submitted:", formData);
+    
     try {
       const result = await login({
         email: formData.email,
         password: formData.password,
       });
 
-      const searchParams = new URLSearchParams(window.location.search);
-      const redirect = searchParams.get("redirect");
-      const target = searchParams.get("target");
+      console.log("Login result:", result);
 
-      if (redirect === "true" && target) {
-        router.push(`/${target}`);
+      if (result?.success) {
+        const searchParams = new URLSearchParams(window.location.search);
+        const redirect = searchParams.get("redirect");
+        const target = searchParams.get("target");
+
+        if (redirect === "true" && target) {
+          router.push(`/${target}`);
+        } else {
+          router.push("/");
+        }
       } else {
-        router.push("/");
+        // Handle login failure
+        setError(result?.error || "Login failed. Please try again.");
       }
     } catch (err) {
       console.error("Login error:", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -138,6 +155,18 @@ const Login = () => {
                 </motion.div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Error Message */}
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center"
+                    >
+                      <FiAlertCircle className="h-5 w-5 text-red-500 mr-3 flex-shrink-0" />
+                      <p className="text-red-700 text-sm">{error}</p>
+                    </motion.div>
+                  )}
+
                   {/* Email */}
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -245,10 +274,20 @@ const Login = () => {
                   {/* Submit Button */}
                   <motion.button
                     type="submit"
+                    disabled={isLoading}
                     className="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-blue-600 disabled:hover:to-indigo-600 transition-all duration-200"
                   >
-                    <FiLogIn className="h-5 w-5 mr-2" />
-                    Sign In
+                    {isLoading ? (
+                      <>
+                        <FiLoader className="h-5 w-5 mr-2 animate-spin" />
+                        Signing In...
+                      </>
+                    ) : (
+                      <>
+                        <FiLogIn className="h-5 w-5 mr-2" />
+                        Sign In
+                      </>
+                    )}
                   </motion.button>
 
                   {/* Divider */}

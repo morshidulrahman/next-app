@@ -4,6 +4,8 @@ import x_axios from "@/lib/axios";
 import { cookies } from "next/headers";
 
 const login = async ({ email, password }) => {
+  console.log("Login attempt:", { email, password });
+  
   try {
     const res = await x_axios.post("/api/v1/auth/login/employee", {
       email,
@@ -14,6 +16,7 @@ const login = async ({ email, password }) => {
 
     if (result) {
       const cookieStore = await cookies();
+      
       if (result.token) {
         cookieStore.set("remote-ui-jwt", result.token, {
           httpOnly: true,
@@ -31,11 +34,20 @@ const login = async ({ email, password }) => {
           maxAge: 60 * 60 * 24 * 7,
         });
       }
+      
       return { success: true, result };
     }
+    
     return { success: true, data: res.data };
   } catch (err) {
-    console.log(err);
+    console.error("Login error:", err);
+    
+    // Return error details for better handling
+    return {
+      success: false,
+      error: err.response?.data?.message || err.message || "Login failed",
+      statusCode: err.response?.status || 500
+    };
   }
 };
 
