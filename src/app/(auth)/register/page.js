@@ -22,6 +22,7 @@ import {
 } from "react-icons/fi";
 import { BsBuilding } from "react-icons/bs";
 import { lookupEmployeeById, register as registerAction } from "@/actiions/auth";
+import { toast } from "sonner";
 
 const StepOne = ({
   formData,
@@ -475,7 +476,7 @@ const Register = () => {
         if (response.autoLogin) {
           router.push("/dashboard");
         } else {
-          alert("Registration successful! Please login to continue."); // TODO: Replace with a toast notification 
+          toast.success("Registration successful! Please login to continue.");
           router.push("/login");
         }
       } else {
