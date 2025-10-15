@@ -1,6 +1,6 @@
 import { Public_Sans } from "next/font/google";
 import "./globals.css";
-import { TanStackQueryProvider } from "@/components/providers/TanStackQueryProvider";
+import Provider from "@/components/providers/Provider";
 
 const publicSans = Public_Sans({
   variable: "--font-public-sans",
@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${publicSans.variable} ${publicSans.variable} antialiased`}
       >
-        <TanStackQueryProvider>{children}</TanStackQueryProvider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );
