@@ -1,9 +1,10 @@
 "use client";
 
+import { updateEmployeeProfile } from "@/actiions/profile";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
-export default function ProfileCard({ profile, onSave }) {
+export default function ProfileCard({ profile, employeeId }) {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState("personal");
   const [formData, setFormData] = useState({});
@@ -35,9 +36,11 @@ export default function ProfileCard({ profile, onSave }) {
   };
 
   const handleSave = async () => {
-    if (!onSave) return;
     startTransition(async () => {
-      const res = await onSave(formData);
+      const res = await updateEmployeeProfile({
+        employeeId: employeeId,
+        data: formData,
+      });
       if (res?.success) {
         toast.success("Profile updated successfully");
         setIsEditing(false);
@@ -113,8 +116,12 @@ export default function ProfileCard({ profile, onSave }) {
 
           <div className="text-right text-white">
             <p className="text-primary-100 text-sm">Company</p>
-            <p className="text-lg font-semibold">{profile.companyId?.name || "N/A"}</p>
-            <p className="text-primary-200 text-sm">Avg Work Hours: {profile.avgWorkHours}h</p>
+            <p className="text-lg font-semibold">
+              {profile.companyId?.name || "N/A"}
+            </p>
+            <p className="text-primary-200 text-sm">
+              Avg Work Hours: {profile.avgWorkHours}h
+            </p>
           </div>
         </div>
       </div>
@@ -147,24 +154,36 @@ export default function ProfileCard({ profile, onSave }) {
             {activeTab === "personal" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.employeeName}</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                    {profile.employeeName}
+                  </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.employeeEmail}</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                    {profile.employeeEmail}
+                  </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Date of Birth
+                  </label>
                   <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
                     {profile.dob ? formatDate(profile.dob) : "N/A"}
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Gender
+                  </label>
                   <p className="text-gray-900 bg-gray-50 p-3 rounded-lg capitalize">
                     {profile.gender || "N/A"}
                   </p>
@@ -172,8 +191,12 @@ export default function ProfileCard({ profile, onSave }) {
 
                 {profile.note && (
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-                    <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.note}</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Notes
+                    </label>
+                    <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                      {profile.note}
+                    </p>
                   </div>
                 )}
               </div>
@@ -182,36 +205,54 @@ export default function ProfileCard({ profile, onSave }) {
             {activeTab === "employment" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Position</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.positionName}</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Position
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                    {profile.positionName}
+                  </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.companyId?.name || "N/A"}</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Company
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                    {profile.companyId?.name || "N/A"}
+                  </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Join Date</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Join Date
+                  </label>
                   <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
                     {profile.createdAt ? formatDate(profile.createdAt) : "N/A"}
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
                   <p className="text-gray-900 bg-gray-50 p-3 rounded-lg capitalize">
                     {profile.employeeStatus}
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Average Work Hours</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.avgWorkHours} hours</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Average Work Hours
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                    {profile.avgWorkHours} hours
+                  </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Salary</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Salary
+                  </label>
                   <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
                     {formatCurrency(profile.actualRate, profile.actualRateType)}
                   </p>
@@ -222,50 +263,86 @@ export default function ProfileCard({ profile, onSave }) {
             {activeTab === "banking" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.bankName || "N/A"}</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bank Branch</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.bankBranch || "N/A"}</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Holder Name</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.accountHolderName || "N/A"}</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg font-mono">
-                    {profile.accountNumber ? `****${profile.accountNumber.slice(-4)}` : "N/A"}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Bank Name
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                    {profile.bankName || "N/A"}
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Routing Number</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg font-mono">{profile.routingNumber || "N/A"}</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Bank Branch
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                    {profile.bankBranch || "N/A"}
+                  </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">SWIFT Code</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg font-mono">{profile.swiftCode || "N/A"}</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Account Holder Name
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                    {profile.accountHolderName || "N/A"}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Account Number
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg font-mono">
+                    {profile.accountNumber
+                      ? `****${profile.accountNumber.slice(-4)}`
+                      : "N/A"}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Routing Number
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg font-mono">
+                    {profile.routingNumber || "N/A"}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    SWIFT Code
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg font-mono">
+                    {profile.swiftCode || "N/A"}
+                  </p>
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Holder Address</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.accountHolderAddress || "N/A"}</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Account Holder Address
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                    {profile.accountHolderAddress || "N/A"}
+                  </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Holder Email</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.accountHolderEmail || "N/A"}</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Account Holder Email
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                    {profile.accountHolderEmail || "N/A"}
+                  </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Holder Phone</label>
-                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">{profile.accountHolderPhone || "N/A"}</p>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Account Holder Phone
+                  </label>
+                  <p className="text-gray-900 bg-gray-50 p-3 rounded-lg">
+                    {profile.accountHolderPhone || "N/A"}
+                  </p>
                 </div>
               </div>
             )}
@@ -273,29 +350,47 @@ export default function ProfileCard({ profile, onSave }) {
             {activeTab === "rates" && (
               <div className="space-y-6">
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-blue-900 mb-2">Salary Info</h4>
+                  <h4 className="font-semibold text-blue-900 mb-2">
+                    Salary Info
+                  </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <span className="text-sm text-blue-700">Current Salary:</span>
+                      <span className="text-sm text-blue-700">
+                        Current Salary:
+                      </span>
                       <p className="font-medium text-blue-900">
-                        {formatCurrency(profile.actualRate, profile.actualRateType)}
+                        {formatCurrency(
+                          profile.actualRate,
+                          profile.actualRateType
+                        )}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {profile.futureActualRates && profile.futureActualRates.length > 0 ? (
+                {profile.futureActualRates &&
+                profile.futureActualRates.length > 0 ? (
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-4">Future Salary Changes</h4>
+                    <h4 className="font-semibold text-gray-900 mb-4">
+                      Future Salary Changes
+                    </h4>
                     <div className="space-y-3">
                       {profile.futureActualRates.map((rate) => (
-                        <div key={rate._id} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                        <div
+                          key={rate._id}
+                          className="bg-gray-50 border border-gray-200 rounded-lg p-4"
+                        >
                           <div className="flex justify-between items-center">
                             <div>
                               <p className="font-medium text-gray-900">
-                                {formatCurrency(rate.actualRate, rate.actualRateType)}
+                                {formatCurrency(
+                                  rate.actualRate,
+                                  rate.actualRateType
+                                )}
                               </p>
-                              <p className="text-sm text-gray-600">Effective from: {formatDate(rate.date)}</p>
+                              <p className="text-sm text-gray-600">
+                                Effective from: {formatDate(rate.date)}
+                              </p>
                             </div>
                             <div className="text-right">
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -320,8 +415,18 @@ export default function ProfileCard({ profile, onSave }) {
                 onClick={handleEdit}
                 className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-2"
               >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
                 </svg>
                 <span>Edit Profile</span>
               </button>
@@ -330,23 +435,33 @@ export default function ProfileCard({ profile, onSave }) {
         ) : (
           <div className="space-y-6">
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Personal Information
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Date of Birth
+                  </label>
                   <input
                     type="date"
                     value={formData.dob || ""}
-                    onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, dob: e.target.value })
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Gender
+                  </label>
                   <select
                     value={formData.gender || ""}
-                    onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, gender: e.target.value })
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   >
                     <option value="">Select Gender</option>
@@ -359,79 +474,121 @@ export default function ProfileCard({ profile, onSave }) {
             </div>
 
             <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Banking Details</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Banking Details
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Bank Name
+                  </label>
                   <input
                     type="text"
                     value={formData.bankName || ""}
-                    onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bankName: e.target.value })
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Enter bank name"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bank Branch</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Bank Branch
+                  </label>
                   <input
                     type="text"
                     value={formData.bankBranch || ""}
-                    onChange={(e) => setFormData({ ...formData, bankBranch: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bankBranch: e.target.value })
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Enter bank branch"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Holder Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Account Holder Name
+                  </label>
                   <input
                     type="text"
                     value={formData.accountHolderName || ""}
-                    onChange={(e) => setFormData({ ...formData, accountHolderName: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        accountHolderName: e.target.value,
+                      })
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Enter account holder name"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Account Number
+                  </label>
                   <input
                     type="text"
                     value={formData.accountNumber || ""}
-                    onChange={(e) => setFormData({ ...formData, accountNumber: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        accountNumber: e.target.value,
+                      })
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Enter account number"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Routing Number</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Routing Number
+                  </label>
                   <input
                     type="text"
                     value={formData.routingNumber || ""}
-                    onChange={(e) => setFormData({ ...formData, routingNumber: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        routingNumber: e.target.value,
+                      })
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Enter routing number"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">SWIFT Code</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    SWIFT Code
+                  </label>
                   <input
                     type="text"
                     value={formData.swiftCode || ""}
-                    onChange={(e) => setFormData({ ...formData, swiftCode: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, swiftCode: e.target.value })
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Enter SWIFT code"
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Holder Address</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Account Holder Address
+                  </label>
                   <textarea
                     value={formData.accountHolderAddress || ""}
-                    onChange={(e) => setFormData({ ...formData, accountHolderAddress: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        accountHolderAddress: e.target.value,
+                      })
+                    }
                     rows={3}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Enter account holder address"
@@ -439,22 +596,36 @@ export default function ProfileCard({ profile, onSave }) {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Holder Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Account Holder Email
+                  </label>
                   <input
                     type="email"
                     value={formData.accountHolderEmail || ""}
-                    onChange={(e) => setFormData({ ...formData, accountHolderEmail: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        accountHolderEmail: e.target.value,
+                      })
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Enter account holder email"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Account Holder Phone</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Account Holder Phone
+                  </label>
                   <input
                     type="tel"
                     value={formData.accountHolderPhone || ""}
-                    onChange={(e) => setFormData({ ...formData, accountHolderPhone: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        accountHolderPhone: e.target.value,
+                      })
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Enter account holder phone"
                   />
@@ -476,16 +647,40 @@ export default function ProfileCard({ profile, onSave }) {
               >
                 {isPending ? (
                   <>
-                    <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    <svg
+                      className="animate-spin h-4 w-4 mr-2"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                      ></path>
                     </svg>
                     <span>Saving...</span>
                   </>
                 ) : (
                   <>
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                     <span>Save Changes</span>
                   </>
