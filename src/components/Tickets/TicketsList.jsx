@@ -8,10 +8,14 @@ import ParticipantsAvatars from "./ParticipantsAvatars";
 import useTickets from "@/hooks/useTickets";
 import x_axios_crm from "@/lib/axiosCrm";
 import Link from "next/link";
+import useProfileClient from "@/lib/useProfileclient";
 
-const TicketsList = ({ employeeId }) => {
+const TicketsList = () => {
   const { ticketsData, isLoadingTickets } = useTickets();
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
+  const profile = useProfileClient();
+
+  const employeeId = profile?._id;
 
   // Priority and Status options
   const priorityOptions = [

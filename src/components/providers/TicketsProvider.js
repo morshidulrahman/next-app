@@ -1,18 +1,20 @@
-/* eslint-disable no-useless-catch */
 "use client";
-
+/* eslint-disable no-useless-catch */
 import { createContext, useCallback, useState } from "react";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import PropTypes from "prop-types";
-import x_axios_crm from "@/lib/axiosCrm";
-import x_axios from "@/lib/axios";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
+import useAxiosSecureAuth from "@/hooks/useAxiosSecureAuth";
 
 export const TicketsContext = createContext(null);
 
 const queryClient = new QueryClient();
 
 export const TicketsProvider = ({ children }) => {
+  const axiosSecure = useAxiosSecure();
+  const axiosSecureAuth = useAxiosSecureAuth();
+
   // ------------STATES------------
   // Modal and UI states
   const [showEditModal, setShowEditModal] = useState(false);
@@ -108,7 +110,7 @@ export const TicketsProvider = ({ children }) => {
   } = useQuery({
     queryKey: ["ticketStats"],
     queryFn: async () => {
-      const { data } = await x_axios_crm.get(
+      const { data } = await axiosSecure.get(
         "/api/v1/ticket/get-employee/ticket-stats"
       );
       return data.data;
@@ -150,7 +152,7 @@ export const TicketsProvider = ({ children }) => {
         isDeleted: false,
       });
 
-      const { data } = await x_axios_crm.get(
+      const { data } = await axiosSecure.get(
         `/api/v1/ticket/get-all/ticket-employee?${queryParams}`
       );
 
@@ -170,7 +172,7 @@ export const TicketsProvider = ({ children }) => {
     async (searchTerm = "") => {
       setIsSearchingDivision(true);
       try {
-        const response = await x_axios.get(
+        const response = await axiosSecureAuth.get(
           `/api/v1/roles?sortBy=createdAt&order=desc&isDeleted=false&page=1&limit=100`,
           {
             params: { globalSearch: searchTerm },
@@ -190,7 +192,7 @@ export const TicketsProvider = ({ children }) => {
         setIsSearchingDivision(false);
       }
     },
-    [x_axios]
+    [axiosSecureAuth]
   );
 
   // search tags
@@ -198,7 +200,7 @@ export const TicketsProvider = ({ children }) => {
     async (searchTerm = "") => {
       setIsSearchingTag(true);
       try {
-        const response = await x_axios_crm.get(
+        const response = await axiosSecure.get(
           `/api/v1/ticket/get-ticket-tags`,
           {
             params: { globalSearch: searchTerm },
@@ -217,14 +219,14 @@ export const TicketsProvider = ({ children }) => {
         setIsSearchingTag(false);
       }
     },
-    [x_axios_crm]
+    [axiosSecure]
   );
 
   // ----------MUTATIONS-------------
   // Create ticket mutation
   const createTicket = useMutation({
     mutationFn: (newTicket) =>
-      x_axios_crm.post("/api/v1/ticket/create-ticket-employee", newTicket),
+      axiosSecure.post("/api/v1/ticket/create-ticket-employee", newTicket),
     onSuccess: () => {
       queryClient.invalidateQueries(["tickets"]);
       queryClient.invalidateQueries(["ticketStats"]); // Refresh stats
@@ -242,7 +244,7 @@ export const TicketsProvider = ({ children }) => {
   const updateTicket = useMutation({
     mutationFn: async ({ id, data }) => {
       try {
-        const response = await x_axios_crm.patch(`/api/v1/ticket/${id}`, data);
+        const response = await axiosSecure.patch(`/api/v1/ticket/${id}`, data);
         return response.data.data;
       } catch (error) {
         throw error;

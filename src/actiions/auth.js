@@ -20,7 +20,7 @@ const login = async ({ email, password }) => {
 
       if (result.token) {
         cookieStore.set("remote-ui-jwt", result.token, {
-          httpOnly: true,
+          httpOnly: false,
           path: "/",
           secure: process.env.NODE_ENV === "production",
           maxAge: 60 * 60 * 24 * 7,
@@ -29,7 +29,7 @@ const login = async ({ email, password }) => {
 
       if (result.employee) {
         cookieStore.set("remote-ui-profile", JSON.stringify(result.employee), {
-          httpOnly: true,
+          httpOnly: false,
           path: "/",
           secure: process.env.NODE_ENV === "production",
           maxAge: 60 * 60 * 24 * 7,
@@ -71,10 +71,7 @@ const register = async (payload) => {
   };
 
   try {
-    const res = await x_axios.post(
-      "/api/v1/employees/register",
-      requestBody
-    );
+    const res = await x_axios.post("/api/v1/employees/register", requestBody);
 
     if (res.data?.success === false) {
       return {
@@ -123,7 +120,8 @@ const register = async (payload) => {
     console.error("Register error:", err);
     return {
       success: false,
-      error: err.response?.data?.message || err.message || "Registration failed",
+      error:
+        err.response?.data?.message || err.message || "Registration failed",
       statusCode: err.response?.status || 500,
     };
   }
