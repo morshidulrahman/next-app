@@ -351,7 +351,7 @@ const Login = () => {
                       className="flex items-start space-x-4"
                     >
                       <div className="flex-shrink-0">
-                        <div className="h-12 w-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <div className="h-12 w-12 bg-white/20 rounded-lg flex items-center justify-center">
                           <feature.icon className="h-6 w-6 text-white" />
                         </div>
                       </div>
@@ -393,7 +393,7 @@ const Login = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.2, duration: 0.6 }}
-                  className="mt-8 bg-white bg-opacity-10 rounded-lg p-6 backdrop-blur-sm"
+                  className="mt-8 bg-white/20 rounded-lg p-6 backdrop-blur-sm"
                 >
                   <p className="text-blue-100 text-sm italic mb-3">
                     &quot;This software has completely streamlined how we track
@@ -401,7 +401,7 @@ const Login = () => {
                     has made our HR processes far more efficient.&quot;
                   </p>
                   <div className="flex items-center">
-                    <div className="h-8 w-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-3">
+                    <div className="h-8 w-8 bg-white/20 bg-opacity-20 rounded-full flex items-center justify-center mr-3">
                       <FiUsers className="h-4 w-4 text-white" />
                     </div>
                     <div>
