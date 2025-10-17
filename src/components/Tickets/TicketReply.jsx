@@ -29,6 +29,7 @@ import {
   sendMessage,
   uploadFileToRemoteIntegrity,
 } from "@/actiions/ticket.js";
+import LoadingSpinner from "../Loading.jsx";
 
 const TicketReply = ({ id, user, exitingMessage }) => {
   const { formatDate } = useTickets();
@@ -275,12 +276,11 @@ const TicketReply = ({ id, user, exitingMessage }) => {
     socket.current = io(process.env.NEXT_PUBLIC_API_SOCKET_URL);
 
     socket.current.on("connect", () => {
-      console.log("✅ Socket connected:", socket.current.id);
       socket.current.emit("joinTicket", { ticketId: id });
     });
 
     socket.current.on("disconnect", () => {
-      console.log("❌ Socket disconnected");
+      console.log(" Socket disconnected");
     });
 
     socket.current.on("message", (newMessage) => {
@@ -619,7 +619,7 @@ const TicketReply = ({ id, user, exitingMessage }) => {
   };
 
   if (isLoadingSingleTicket) {
-    return <h1>Loading.....</h1>;
+    return <LoadingSpinner />;
   }
 
   const ticket = singleTicket?.data || {};

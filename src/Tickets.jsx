@@ -1,4 +1,5 @@
 "use client";
+import LoadingSpinner from "./components/Loading";
 import TicketsFilter from "./components/Tickets/TicketsFilter";
 import TicketsList from "./components/Tickets/TicketsList";
 import TicketsModal from "./components/Tickets/TicketsModal";
@@ -18,7 +19,7 @@ const Tickets = ({ employeeId }) => {
   } = useTickets();
 
   if (isLoadingTickets) {
-    return <h1>Loading........</h1>;
+    return <LoadingSpinner />;
   }
 
   return (
