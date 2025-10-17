@@ -1,4 +1,5 @@
 "use server";
+import x_axios from "@/lib/axios";
 import x_axios_crm from "@/lib/axiosCrm";
 
 /**
@@ -25,6 +26,7 @@ export const fetchAllTickets = async (queryParams) => {
   }
 };
 
+// upload files
 export const uploadFileToRemoteIntegrity = async (formData) => {
   try {
     const response = await fetch(
@@ -46,10 +48,50 @@ export const uploadFileToRemoteIntegrity = async (formData) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("❌ uploadFileToRemoteIntegrity error:", error);
     return {
       success: false,
       message: error.message || "Upload failed",
+    };
+  }
+};
+
+// search division
+export const searchDivisionsAction = async (searchTerm = "") => {
+  try {
+    const response = await x_axios.get(
+      `/api/v1/roles?sortBy=createdAt&order=desc&isDeleted=false&page=1&limit=10`,
+      {
+        params: { globalSearch: searchTerm },
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    return {
+      success: false,
+      divisions: [],
+      message:
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to search divisions",
+    };
+  }
+};
+
+// search division
+export const searchTagsAction = async (searchTerm = "") => {
+  try {
+    const response = await x_axios_crm.get(`/api/v1/ticket/get-ticket-tags`, {
+      params: { globalSearch: searchTerm },
+    });
+    return response.data.data;
+  } catch (error) {
+    return {
+      success: false,
+      divisions: [],
+      message:
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to search divisions",
     };
   }
 };

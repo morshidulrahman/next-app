@@ -5,7 +5,7 @@ import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import PropTypes from "prop-types";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
-import useAxiosSecureAuth from "@/hooks/useAxiosSecureAuth";
+import { searchDivisionsAction, searchTagsAction } from "@/actiions/ticket";
 
 export const TicketsContext = createContext(null);
 
@@ -13,7 +13,6 @@ const queryClient = new QueryClient();
 
 export const TicketsProvider = ({ children }) => {
   const axiosSecure = useAxiosSecure();
-  const axiosSecureAuth = useAxiosSecureAuth();
 
   // ------------STATES------------
   // Modal and UI states
@@ -172,19 +171,10 @@ export const TicketsProvider = ({ children }) => {
     async (searchTerm = "") => {
       setIsSearchingDivision(true);
       try {
-        const response = await axiosSecureAuth.get(
-          `/api/v1/roles?sortBy=createdAt&order=desc&isDeleted=false&page=1&limit=100`,
-          {
-            params: { globalSearch: searchTerm },
-          }
-        );
-        if (response.status === 200) {
-          console.log("response division: ", response?.data?.data);
-
-          setDivisionSearchResults(response.data.data.slice(0, 5));
-        } else {
-          setDivisionSearchResults([]);
-        }
+        const response = await searchDivisionsAction(searchTerm);
+        setDivisionSearchResults(response);
+        setIsSearchingDivision(false);
+        return response;
       } catch (error) {
         console.error("Error searching Companies:", error);
         setDivisionSearchResults([]);
@@ -192,7 +182,7 @@ export const TicketsProvider = ({ children }) => {
         setIsSearchingDivision(false);
       }
     },
-    [axiosSecureAuth]
+    [searchDivisionsAction]
   );
 
   // search tags
@@ -200,18 +190,9 @@ export const TicketsProvider = ({ children }) => {
     async (searchTerm = "") => {
       setIsSearchingTag(true);
       try {
-        const response = await axiosSecure.get(
-          `/api/v1/ticket/get-ticket-tags`,
-          {
-            params: { globalSearch: searchTerm },
-          }
-        );
-        if (response.status === 200) {
-          console.log("ticket search: ", response?.data?.data);
-          setTagSearchResults(response?.data?.data.slice(0, 5));
-        } else {
-          setTagSearchResults([]);
-        }
+        const response = await searchTagsAction(searchTerm);
+        console.log(response, "res");
+        setTagSearchResults(response);
       } catch (error) {
         console.error("Error searching Companies:", error);
         setTagSearchResults([]);
@@ -219,7 +200,7 @@ export const TicketsProvider = ({ children }) => {
         setIsSearchingTag(false);
       }
     },
-    [axiosSecure]
+    [searchTagsAction]
   );
 
   // ----------MUTATIONS-------------

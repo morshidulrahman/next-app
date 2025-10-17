@@ -1,4 +1,3 @@
-"use client";
 import RegisterComponent from "@/components/Auth/RegisterComponent";
 import { Suspense } from "react";
 
