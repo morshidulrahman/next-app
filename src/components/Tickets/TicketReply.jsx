@@ -24,6 +24,7 @@ import StatusTimeline from "./StatusTimeline.jsx";
 import { formatToTimeOnly } from "@/utils/formatTime.js";
 import Link from "next/link.js";
 import useTickets from "@/hooks/useTickets.js";
+import { uploadFileToRemoteIntegrity } from "@/actiions/ticket.js";
 
 const TicketReply = ({ id, user }) => {
   const { formatDate } = useTickets();
@@ -435,31 +436,11 @@ const TicketReply = ({ id, user }) => {
       // Update progress to show upload starting
       setUploadProgress((prev) => ({ ...prev, [fileId]: 0 }));
 
-      const response = await fetch(
-        "https://files.remoteintegrity.com/api/files/faba4ad7-862a-4a20-9f33-73cf0286aa4c/upload",
-        {
-          method: "POST",
-          headers: {
-            "x-api-key":
-              "99cd5d53a736d4f65458e4a943e86dcb6701ddf10fc7d09efca918933975bdf0",
-          },
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `File upload failed: ${response.status} - ${errorText}`
-        );
-      }
-
-      const result = await response.json();
-
+      const response = await uploadFileToRemoteIntegrity(formData);
       // Update progress to show upload complete
       setUploadProgress((prev) => ({ ...prev, [fileId]: 100 }));
 
-      return result;
+      return response;
     } catch (error) {
       console.log("File upload error:", error.message);
       // Remove progress on error

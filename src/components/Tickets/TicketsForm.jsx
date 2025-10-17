@@ -5,6 +5,7 @@ import { IoCloseOutline, IoImageOutline, IoLinkOutline } from "react-icons/io5";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import useTickets from "@/hooks/useTickets";
 import useAxiosSecureAuth from "@/hooks/useAxiosSecureAuth";
+import { uploadFileToRemoteIntegrity } from "@/actiions/ticket";
 
 const TicketsForm = ({ employeeId }) => {
   const {
@@ -329,29 +330,9 @@ const TicketsForm = ({ employeeId }) => {
 
     try {
       setUploadProgress((prev) => ({ ...prev, [fileId]: 0 }));
-
-      const response = await fetch(
-        "https://files.remoteintegrity.com/api/files/faba4ad7-862a-4a20-9f33-73cf0286aa4c/upload",
-        {
-          method: "POST",
-          headers: {
-            "x-api-key":
-              "99cd5d53a736d4f65458e4a943e86dcb6701ddf10fc7d09efca918933975bdf0",
-          },
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `File upload failed: ${response.status} - ${errorText}`
-        );
-      }
-
-      const result = await response.json();
+      const response = await uploadFileToRemoteIntegrity(formData);
       setUploadProgress((prev) => ({ ...prev, [fileId]: 100 }));
-      return result;
+      return response;
     } catch (error) {
       console.error("File upload error:", error.message);
       setUploadProgress((prev) => {

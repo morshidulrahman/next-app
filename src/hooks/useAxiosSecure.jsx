@@ -14,7 +14,6 @@ const useAxiosSecure = () => {
     const reqInterceptor = axiosSecure.interceptors.request.use(
       (config) => {
         const token = getCookie("remote-ui-jwt");
-        console.log(token, "token from cookies-next");
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
