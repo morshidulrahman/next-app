@@ -41,7 +41,7 @@ const Tickets = ({ employeeId }) => {
               isFilterVisible ? "w-3/4" : "w-full"
             }`}
           >
-            <TicketsList employeeId={employeeId} />
+            <TicketsList />
             <TicketsPagination />
           </div>
 

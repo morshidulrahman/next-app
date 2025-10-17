@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 
-export const privateRoutes = ["/dashboard", "work-hours", "profile", "tickets"];
+export const privateRoutes = [
+  "/dashboard",
+  "/work-hours",
+  "/profile",
+  "/tickets",
+];
 
 const redirectUrl = (req, pathname) => {
   let target = pathname;

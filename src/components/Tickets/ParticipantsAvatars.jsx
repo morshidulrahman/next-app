@@ -1,5 +1,5 @@
 "use client";
-import x_axios from "@/lib/axios";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 import { useState, useEffect, useMemo, useCallback } from "react";
 
 const ParticipantsAvatars = ({
@@ -10,7 +10,7 @@ const ParticipantsAvatars = ({
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const axiosSecure = useAxiosSecure();
   // Memoize participants array to prevent unnecessary re-renders
   const memoizedParticipants = useMemo(
     () => participants,
@@ -57,10 +57,10 @@ const ParticipantsAvatars = ({
         setLoading(true);
         setError(null);
 
-        const response = await x_axios.get("/api/v1/users", {
+        const response = await axiosSecure.get("/api/v1/users", {
           params: {
             page: 1,
-            limit: 1000,
+            limit: 100,
             sortBy: "createdAt",
             order: "desc",
             isDeleted: false,
@@ -88,7 +88,7 @@ const ParticipantsAvatars = ({
         setLoading(false);
       }
     },
-    [x_axios]
+    [axiosSecure]
   );
 
   // Use effect with proper dependencies and early return

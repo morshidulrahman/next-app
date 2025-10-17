@@ -1,12 +1,12 @@
 import React from "react";
-import { TanStackQueryProvider } from "./TanStackQueryProvider";
 import TicketsProvider from "./TicketsProvider";
+import { QueryProvider } from "./TanStackQueryProvider";
 
 const Provider = ({ children }) => {
   return (
-    <TanStackQueryProvider>
+    <QueryProvider>
       <TicketsProvider>{children}</TicketsProvider>
-    </TanStackQueryProvider>
+    </QueryProvider>
   );
 };
 
