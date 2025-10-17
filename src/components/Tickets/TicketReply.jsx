@@ -436,7 +436,7 @@ const TicketReply = ({ id, user }) => {
       setUploadProgress((prev) => ({ ...prev, [fileId]: 0 }));
 
       const response = await fetch(
-        "http://localhost:3020/api/files/faba4ad7-862a-4a20-9f33-73cf0286aa4c/upload",
+        "https://files.remoteintegrity.com/api/files/faba4ad7-862a-4a20-9f33-73cf0286aa4c/upload",
         {
           method: "POST",
           headers: {

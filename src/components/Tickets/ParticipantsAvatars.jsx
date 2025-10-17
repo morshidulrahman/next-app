@@ -1,5 +1,6 @@
 "use client";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
+import useAxiosSecureAuth from "@/hooks/useAxiosSecureAuth";
 import { useState, useEffect, useMemo, useCallback } from "react";
 
 const ParticipantsAvatars = ({
@@ -10,7 +11,7 @@ const ParticipantsAvatars = ({
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const axiosSecure = useAxiosSecure();
+  const axiosSecure = useAxiosSecureAuth();
   // Memoize participants array to prevent unnecessary re-renders
   const memoizedParticipants = useMemo(
     () => participants,
