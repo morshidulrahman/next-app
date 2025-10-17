@@ -24,16 +24,20 @@ import StatusTimeline from "./StatusTimeline.jsx";
 import { formatToTimeOnly } from "@/utils/formatTime.js";
 import Link from "next/link.js";
 import useTickets from "@/hooks/useTickets.js";
-import { uploadFileToRemoteIntegrity } from "@/actiions/ticket.js";
+import {
+  getTicetMessage,
+  sendMessage,
+  uploadFileToRemoteIntegrity,
+} from "@/actiions/ticket.js";
 
-const TicketReply = ({ id, user }) => {
+const TicketReply = ({ id, user, exitingMessage }) => {
   const { formatDate } = useTickets();
   const axiosSecure = useAxiosSecure();
   const axiosSecureAuth = useAxiosSecureAuth();
   const socket = useRef(null);
 
   // Comment system states
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(exitingMessage);
   const [newComment, setNewComment] = useState("");
 
   // User mention states
@@ -280,7 +284,6 @@ const TicketReply = ({ id, user }) => {
     });
 
     socket.current.on("message", (newMessage) => {
-      console.log("📩 New message received:", newMessage);
       setMessages((prev) => {
         if (prev.some((msg) => msg._id === newMessage._id)) {
           return prev;
@@ -290,7 +293,6 @@ const TicketReply = ({ id, user }) => {
     });
 
     socket.current.on("ticketMessage", (newMessage) => {
-      console.log("📩 New ticket message received:", newMessage);
       setMessages((prev) => {
         if (prev.some((msg) => msg._id === newMessage._id)) {
           return prev;
@@ -313,20 +315,6 @@ const TicketReply = ({ id, user }) => {
       socket.current.disconnect();
     };
   }, [id]);
-
-  // Fetch existing messages
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const res = await axiosSecure.get(`/api/v1/ticket/get-messages/${id}`);
-        setMessages(res.data.data || []);
-      } catch (err) {
-        console.error("Error fetching messages", err);
-      }
-    };
-
-    fetchMessages();
-  }, [id, axiosSecure]);
 
   // Auto scroll to bottom when messages change
   useEffect(() => {
@@ -505,18 +493,13 @@ const TicketReply = ({ id, user }) => {
         participants,
       };
 
-      const response = await axiosSecure.post(
-        "/api/v1/ticket/send-message",
-        payload
-      );
+      const response = await sendMessage(payload);
 
       // Instead of adding to local state, refetch messages to get complete data
       if (response.data && response.data.data) {
         // Refetch messages to get the complete data with role information
         try {
-          const messagesResponse = await axiosSecure.get(
-            `/api/v1/ticket/get-messages/${id}`
-          );
+          const messagesResponse = await getTicetMessage(id);
           setMessages(messagesResponse.data.data || []);
         } catch (err) {
           console.error("Error refetching messages", err);

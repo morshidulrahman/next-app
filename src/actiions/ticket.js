@@ -87,11 +87,44 @@ export const searchTagsAction = async (searchTerm = "") => {
   } catch (error) {
     return {
       success: false,
-      divisions: [],
       message:
         error.response?.data?.message ||
         error.message ||
-        "Failed to search divisions",
+        "Failed to search tag",
+    };
+  }
+};
+
+// send message
+export const sendMessage = async (data) => {
+  try {
+    const response = await x_axios_crm.post(
+      `/api/v1/ticket/send-message`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to send message",
+    };
+  }
+};
+
+export const getTicetMessage = async (id) => {
+  try {
+    const response = await x_axios_crm.get(`/api/v1/ticket/get-messages/${id}`);
+    return response.data;
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to get message",
     };
   }
 };
