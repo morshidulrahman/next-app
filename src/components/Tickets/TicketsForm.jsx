@@ -3,8 +3,8 @@ import { toast } from "sonner";
 import { useCallback, useRef, useState, useEffect } from "react";
 import { IoCloseOutline, IoImageOutline, IoLinkOutline } from "react-icons/io5";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import x_axios from "@/lib/axios";
 import useTickets from "@/hooks/useTickets";
+import useAxiosSecureAuth from "@/hooks/useAxiosSecureAuth";
 
 const TicketsForm = ({ employeeId }) => {
   const {
@@ -43,7 +43,7 @@ const TicketsForm = ({ employeeId }) => {
   const [uploadProgress, setUploadProgress] = useState({});
   const fileInputRef = useRef(null);
   const imageInputRef = useRef(null);
-
+  const axiosSecureAuth = useAxiosSecureAuth();
   // New states for dropdown functionality
   const [assignmentType, setAssignmentType] = useState("division"); // 'division' or 'group'
   const [isAssignmentDropdownOpen, setIsAssignmentDropdownOpen] =
@@ -85,7 +85,7 @@ const TicketsForm = ({ employeeId }) => {
     async (searchTerm = "") => {
       setIsSearchingIndividuals(true);
       try {
-        const response = await x_axios.get(`/api/v1/users`, {
+        const response = await axiosSecureAuth.get(`/api/v1/users`, {
           params: {
             globalSearch: searchTerm,
             sortBy: "createdAt",
@@ -115,7 +115,7 @@ const TicketsForm = ({ employeeId }) => {
         setIsSearchingIndividuals(false);
       }
     },
-    [x_axios, selectedIndividuals]
+    [axiosSecureAuth, selectedIndividuals]
   ); // Add selectedIndividuals as dependency
 
   // Debounced search for individuals

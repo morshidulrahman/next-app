@@ -1,4 +1,5 @@
-import { useParams, Link } from "react-router-dom";
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -9,35 +10,23 @@ import {
   IoSendSharp,
 } from "react-icons/io5";
 import { MdOutlineNoteAlt } from "react-icons/md";
-import { formatToTimeOnly } from "../../utils/formatTime.js";
 import { toast } from "sonner";
 import io from "socket.io-client";
 import { AiOutlineDelete } from "react-icons/ai";
 import { GoLink } from "react-icons/go";
-import { useAuth } from "../../hooks/useAuth";
-import useTickets from "../../hooks/useTickets";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
-import useAxiosSecureAuth from "../../hooks/useAxiosSecureAuth";
-import LoadingSpinner from "../../components/common/LoadingSpinner";
-import RichCommentInput from "../../components/dashboard/Common/Mention/RichCommentInput";
-import ParticipantsAvatars from "../../components/dashboard/Tickets/ParticipantsAvatars.jsx";
-import StatusTimeline from "../../components/dashboard/Tickets/StatusTimeline.jsx";
-import TicketsModal from "../../components/dashboard/Tickets/TicketsModal.jsx";
-import "../../components/dashboard/Common/Mention/RichCommentInput.css";
+import useProfileClient from "@/lib/useProfileclient.js";
+import useAxiosSecure from "@/hooks/useAxiosSecure.jsx";
+import useAxiosSecureAuth from "@/hooks/useAxiosSecureAuth.jsx";
+import RichCommentInput from "./RichCommentInput.jsx";
+import "./RichCommentInput.css";
+import ParticipantsAvatars from "./ParticipantsAvatars.jsx";
+import StatusTimeline from "./StatusTimeline.jsx";
+import { formatToTimeOnly } from "@/utils/formatTime.js";
+import Link from "next/link.js";
+import useTickets from "@/hooks/useTickets.js";
 
-const TicketReply = () => {
-  const { id } = useParams();
-  const { user } = useAuth();
-  const {
-    formatDate,
-    updateTicket,
-    ticketsRefetch,
-    setShowDeleteModal,
-    setSelectedTicket,
-    showNoteModal,
-    setShowNoteModal,
-    refetchStats,
-  } = useTickets();
+const TicketReply = ({ id, user }) => {
+  const { formatDate } = useTickets();
   const axiosSecure = useAxiosSecure();
   const axiosSecureAuth = useAxiosSecureAuth();
   const socket = useRef(null);
@@ -264,7 +253,7 @@ const TicketReply = () => {
         return (
           <Link
             key={index}
-            to={`/dashboard/user/${part}`}
+            href={`/dashboard/user/${part}`}
             className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
             onClick={(e) => e.stopPropagation()}
           >
@@ -278,7 +267,7 @@ const TicketReply = () => {
 
   // Setup socket connection
   useEffect(() => {
-    socket.current = io(import.meta.env.VITE_API_SOCKET_URL);
+    socket.current = io(process.env.NEXT_PUBLIC_API_SOCKET_URL);
 
     socket.current.on("connect", () => {
       console.log("✅ Socket connected:", socket.current.id);
@@ -447,7 +436,7 @@ const TicketReply = () => {
       setUploadProgress((prev) => ({ ...prev, [fileId]: 0 }));
 
       const response = await fetch(
-        "https://files.remoteintegrity.com/api/files/faba4ad7-862a-4a20-9f33-73cf0286aa4c/upload",
+        "http://localhost:3020/api/files/faba4ad7-862a-4a20-9f33-73cf0286aa4c/upload",
         {
           method: "POST",
           headers: {
@@ -472,7 +461,7 @@ const TicketReply = () => {
 
       return result;
     } catch (error) {
-      console.error("File upload error:", error.message);
+      console.log("File upload error:", error.message);
       // Remove progress on error
       setUploadProgress((prev) => {
         const updated = { ...prev };
@@ -529,7 +518,7 @@ const TicketReply = () => {
 
       const payload = {
         ticketId: id,
-        sender: user?.id,
+        sender: user?._id,
         content: newComment.trim(),
         attachments,
         participants,
@@ -666,13 +655,13 @@ const TicketReply = () => {
   };
 
   if (isLoadingSingleTicket) {
-    return <LoadingSpinner />;
+    return <h1>Loading.....</h1>;
   }
 
   const ticket = singleTicket?.data || {};
   // console.log("from Ticket reply: ", ticket, user);
   // const hasTicketAccess = ticket?.participants.includes(user?.id)
-  const hasTicketAccess = ticket?.createdBy?._id === user?.id;
+  const hasTicketAccess = ticket?.createdBy?._id === user?._id;
 
   return (
     <>

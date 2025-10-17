@@ -9,11 +9,13 @@ import useTickets from "@/hooks/useTickets";
 import x_axios_crm from "@/lib/axiosCrm";
 import Link from "next/link";
 import useProfileClient from "@/lib/useProfileclient";
+import useAxiosSecure from "@/hooks/useAxiosSecure";
 
 const TicketsList = () => {
   const { ticketsData, isLoadingTickets } = useTickets();
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const profile = useProfileClient();
+  const axiosSecure = useAxiosSecure();
 
   const employeeId = profile?._id;
 
@@ -84,7 +86,7 @@ const TicketsList = () => {
     return useQuery({
       queryKey: ["ticketComments", ticketId],
       queryFn: async () => {
-        const response = await x_axios_crm.get(
+        const response = await axiosSecure.get(
           `/api/v1/ticket/get-messages/${ticketId}`
         );
         return response.data.data || [];
@@ -180,7 +182,7 @@ const TicketsList = () => {
         {tickets.map((ticket) => (
           <Link
             key={ticket._id}
-            href={`${ticket._id}`}
+            href={`/tickets/${ticket._id}`}
             className="block bg-white border border-gray-200 rounded-[4px] shadow-sm hover:shadow-md hover:bg-gray-50 duration-300 transition-shadow overflow-hidden cursor-pointer"
           >
             <div className="p-4">

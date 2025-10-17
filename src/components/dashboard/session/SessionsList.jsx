@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useTransition, useRef } from "react";
+import { useState, useEffect, useTransition, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import { format, subDays } from "date-fns";
 import {
@@ -75,11 +75,18 @@ const SessionsList = ({ initialData, employee, user }) => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
+  // ✅ Stable callbacks for child components
+  const handleStartDateChange = useCallback((date) => {
+    setStartDate(date);
+  }, []);
+
+  const handleEndDateChange = useCallback((date) => {
+    setEndDate(date);
+  }, []);
+
   // Handle preset date ranges automatically
   useEffect(() => {
-    // Skip if dateRange is custom (user manually sets dates)
     if (dateRange === "custom") return;
-
     const today = new Date();
 
     switch (dateRange) {
@@ -89,7 +96,6 @@ const SessionsList = ({ initialData, employee, user }) => {
         setEndDate(todayDate);
         break;
       }
-
       case "yesterday": {
         const yesterday = subDays(today, 1);
         const yesterdayDate = format(yesterday, "yyyy-MM-dd");
@@ -97,21 +103,18 @@ const SessionsList = ({ initialData, employee, user }) => {
         setEndDate(yesterdayDate);
         break;
       }
-
       case "week": {
         const weekStart = subDays(today, 6);
         setStartDate(format(weekStart, "yyyy-MM-dd"));
         setEndDate(format(today, "yyyy-MM-dd"));
         break;
       }
-
       case "month": {
         const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
         setStartDate(format(monthStart, "yyyy-MM-dd"));
         setEndDate(format(today, "yyyy-MM-dd"));
         break;
       }
-
       default:
         break;
     }
@@ -125,17 +128,13 @@ const SessionsList = ({ initialData, employee, user }) => {
     }
 
     if (newViewMode === "calendar" && viewMode !== "calendar") {
-      // Switching TO calendar view
       setPreviousDateRange(dateRange);
       setDateRange("month");
-      // Dates will be set by the useEffect above
     } else if (
       viewMode === "calendar" &&
       (newViewMode === "list" || newViewMode === "timeline")
     ) {
-      // Switching FROM calendar view
       setDateRange(previousDateRange);
-      // Dates will be set by the useEffect above
     }
 
     setViewMode(newViewMode);
@@ -157,27 +156,37 @@ const SessionsList = ({ initialData, employee, user }) => {
   }, [dateRange]);
 
   const isFirstRender = useRef(true);
+  const lastParamsRef = useRef("");
 
+  // ✅ Debounced router.push to prevent double API calls
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
 
-    const params = new URLSearchParams();
-    if (startDate) params.set("startDate", startDate);
-    if (endDate) params.set("endDate", endDate);
-    if (isManual) params.set("isManual", isManual);
-    if (searchTerm) params.set("searchTerm", searchTerm);
-    if (page) params.set("page", page);
-    if (limit) params.set("limit", limit);
-    if (sortField) params.set("sortField", sortField);
-    if (sortOrder) params.set("sortOrder", sortOrder);
-    if (timezone) params.set("timezone", timezone);
+    const handler = setTimeout(() => {
+      const params = new URLSearchParams();
+      if (startDate) params.set("startDate", startDate);
+      if (endDate) params.set("endDate", endDate);
+      if (isManual) params.set("isManual", isManual);
+      if (searchTerm) params.set("searchTerm", searchTerm);
+      if (page) params.set("page", page);
+      if (limit) params.set("limit", limit);
+      if (sortField) params.set("sortField", sortField);
+      if (sortOrder) params.set("sortOrder", sortOrder);
+      if (timezone) params.set("timezone", timezone);
 
-    startTransition(() => {
-      router.push(`?${params.toString()}`, { scroll: false });
-    });
+      const newParams = params.toString();
+      if (lastParamsRef.current === newParams) return;
+      lastParamsRef.current = newParams;
+
+      startTransition(() => {
+        router.push(`?${newParams}`, { scroll: false });
+      });
+    }, 300);
+
+    return () => clearTimeout(handler);
   }, [
     startDate,
     endDate,
@@ -194,7 +203,6 @@ const SessionsList = ({ initialData, employee, user }) => {
   const handleDeleteSession = async (sessionId) => {
     startTransition(async () => {
       const result = await deleteSession(sessionId);
-
       if (result.success) {
         toast.success("Session deleted successfully!");
         setShowDetailsModal(false);
@@ -711,8 +719,8 @@ const SessionsList = ({ initialData, employee, user }) => {
           setSelectedDaySessions={setSelectedDaySessions}
           setSelectedDate={setSelectedDate}
           setShowDaySessionsModal={setShowDaySessionsModal}
-          setStartDate={setStartDate}
-          setEndDate={setEndDate}
+          setStartDate={handleStartDateChange} // ✅ stable callback
+          setEndDate={handleEndDateChange} // ✅ stable callback
           currentStartDate={startDate}
           currentEndDate={endDate}
           employeeId={employee?.employeeId || user?.employeeId}
@@ -730,6 +738,8 @@ const SessionsList = ({ initialData, employee, user }) => {
           setSelectedDaySessions={setSelectedDaySessions}
           setSelectedDate={setSelectedDate}
           setShowDaySessionsModal={setShowDaySessionsModal}
+          setStartDate={handleStartDateChange} // ✅ stable callback
+          setEndDate={handleEndDateChange}
         />
       )}
 
