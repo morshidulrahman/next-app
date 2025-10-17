@@ -183,7 +183,7 @@ const TicketsList = () => {
           <Link
             key={ticket._id}
             href={`/tickets/${ticket._id}`}
-            className="block bg-white border border-gray-200 rounded-[4px] shadow-sm hover:shadow-md hover:bg-gray-50 duration-300 transition-shadow overflow-hidden cursor-pointer"
+            className="block bg-white border border-gray-200 rounded-[4px] hover:shadow-md hover:bg-gray-50 duration-300 transition-shadow overflow-hidden cursor-pointer"
           >
             <div className="p-4">
               {/* Header with Creator Info, Date, and Status/Priority */}

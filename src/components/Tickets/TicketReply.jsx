@@ -668,7 +668,7 @@ const TicketReply = ({ id, user }) => {
       <div className="flex gap-6 bg-white border border-gray-100 p-3 rounded-[4px]">
         {/* Main Content */}
         <div className="flex-1 space-y-3 flex flex-col">
-          <div className="bg-white px-6 py-4 border rounded-[4px]">
+          <div className="bg-white px-6 py-4 border border-gray-200 rounded-[4px]">
             {/* Ticket Title */}
 
             <div className="flex items-start justify-between gap-5">
