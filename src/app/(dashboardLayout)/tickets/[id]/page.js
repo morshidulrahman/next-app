@@ -1,10 +1,15 @@
+import TicketReply from "@/components/Tickets/TicketReply";
+import { useProfile } from "@/lib/useProfile";
 import React from "react";
 
-const page = () => {
+const page = async ({ params }) => {
+  const user = await useProfile();
+  const { id } = await params;
+
   return (
-    <div>
-      <h1>single tickt</h1>
-    </div>
+    <>
+      <TicketReply id={id} user={user} />
+    </>
   );
 };
 
