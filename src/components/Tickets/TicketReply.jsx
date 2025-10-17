@@ -1144,7 +1144,7 @@ const TicketReply = ({ id, user }) => {
         {/* Right Sidebar - Post Info */}
         <div className="sticky top-0 w-[27%] bg-white border border-gray-200 rounded-[4px] px-4 pt-2 pb-7 h-fit">
           {/* Header with three dots menu */}
-          <div className="flex items-center justify-between mb-4 pb-1  border-b">
+          <div className="flex items-center justify-between mb-4 pb-1  border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900">Post Info</h3>
             <div className="flex items-center justify-center">
               <div
@@ -1159,7 +1159,7 @@ const TicketReply = ({ id, user }) => {
 
           {/* Post Info Content */}
           <div className="space-y-4">
-            <div className="space-y-2 border-b pb-3">
+            <div className="space-y-2 border-b border-gray-200 pb-3">
               {/* Status */}
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-600">
@@ -1201,7 +1201,7 @@ const TicketReply = ({ id, user }) => {
               </div>
             </div>
 
-            <div className="space-y-3 border-b pb-2">
+            <div className="space-y-3 border-b border-gray-200 pb-2">
               {/* Date */}
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-600">Date</span>
@@ -1262,7 +1262,7 @@ const TicketReply = ({ id, user }) => {
 
             {/* Tags */}
             {ticket.tags && ticket.tags.length > 0 && (
-              <div className="border-b pb-3">
+              <div className="border-b border-gray-200 pb-3">
                 {/* <span className="text-sm font-medium text-gray-600 block mb-2">Tags</span> */}
                 <div className="flex flex-wrap gap-2">
                   {ticket.tags.map((tag, index) => (

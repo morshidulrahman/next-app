@@ -90,7 +90,7 @@ const StatusTimeline = ({ ticket }) => {
   if (isLoading) {
     return (
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-3 -mt-1 border-b pb-2">
+        <h3 className="text-lg font-semibold text-gray-900 mb-3 -mt-1 border-b border-gray-200 pb-2">
           Status Timeline
         </h3>
         <div className="animate-pulse space-y-6">
@@ -110,7 +110,7 @@ const StatusTimeline = ({ ticket }) => {
 
   return (
     <div>
-      <h3 className="text-lg font-semibold text-gray-900  mb-3 -mt-1 border-b pb-2">
+      <h3 className="text-lg font-semibold text-gray-900  mb-3 -mt-1 border-b border-gray-200 pb-2">
         Status Timeline
       </h3>
 
