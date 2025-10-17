@@ -30,7 +30,7 @@ const Tickets = ({ employeeId }) => {
         onFilterChange={handleStatsFilterChange}
         isLoadingStats={isLoadingStats}
       />
-      <div className="bg-white rounded-[4px] border">
+      <div className="bg-white rounded-[4px] border border-gray-200 p-4 mt-4">
         <TicketsToolbar />
 
         {/* Main Content Area with Sidebar */}
