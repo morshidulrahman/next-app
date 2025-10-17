@@ -13,7 +13,9 @@ export const Sidebar = () => {
       <div className="p-6">
         <div className="flex items-center space-x-3 mb-8">
           <div className="rounded-lg">
-            <img
+            <Image
+              height={32}
+              width={32}
               src="https://i.ibb.co.com/k6P3pGVZ/output-onlinepngtools-1.png"
               alt={"Logo"}
               className="h-8 w-8"

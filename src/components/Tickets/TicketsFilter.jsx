@@ -265,7 +265,7 @@ const TicketsFilter = () => {
     //     <div className="bg-white border-l border-t border-b rounded-md border-gray-200 flex flex-col">
     <div
       className={`transition-all duration-300 ease-in-out ${
-        isFilterVisible ? "w-[25%]" : "w-0"
+        isFilterVisible ? "w-[25%]" : "w-0 hidden"
       }`}
     >
       <div className="sticky top-0 bg-white border-l border-t border-b rounded-md border-gray-200 flex flex-col shadow-md shadow-gray-100">
