@@ -225,7 +225,7 @@ const SessionsList = ({ initialData, employee, user }) => {
           </h2>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col md:flex-row md:flex-wrap justify-start gap-4">
           {/* Manual Filter */}
           <div className="relative">
             <label className="block text-sm font-medium text-gray-700 mb-1">
