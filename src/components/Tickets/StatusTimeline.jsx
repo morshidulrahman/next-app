@@ -114,7 +114,7 @@ const StatusTimeline = ({ ticket }) => {
         Status Timeline
       </h3>
 
-      <div className="relative">
+      <div className="relative max-h-[400px] overflow-y-auto pr-3">
         {statusHistory.length === 0 ? (
           <p className="text-gray-500  text-sm">No timeline data available</p>
         ) : (
