@@ -257,14 +257,11 @@ const TicketReply = ({ id, user, exitingMessage }) => {
       if (index % 2 === 1) {
         // This is a username
         return (
-          <Link
-            key={index}
-            href={`/dashboard/user/${part}`}
+          <div
             className="text-blue-600 hover:text-blue-800 hover:underline font-medium"
-            onClick={(e) => e.stopPropagation()}
           >
             @{part}
-          </Link>
+          </div>
         );
       }
       return part;
