@@ -3,7 +3,7 @@ import axios from "axios";
 import { cookies } from "next/headers";
 
 const x_axios_crm = axios.create({
-  baseURL: process.env.API_CRM_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_CRM_URL,
   timeout: 0,
   withCredentials: true,
 });
