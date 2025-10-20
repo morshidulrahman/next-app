@@ -406,7 +406,7 @@ const Login = () => {
                     </div>
                     <div>
                       <div className="text-white text-sm font-medium">
-                        Gabwa
+                        Nasreen
                       </div>
                       <div className="text-blue-200 text-xs">HR Manager</div>
                     </div>
