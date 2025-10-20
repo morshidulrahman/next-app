@@ -2,11 +2,9 @@
 import { useState } from "react";
 import { FiCalendar, FiMessageCircle } from "react-icons/fi";
 import { FaRegBuilding } from "react-icons/fa6";
-
 import { useQuery } from "@tanstack/react-query";
 import ParticipantsAvatars from "./ParticipantsAvatars";
 import useTickets from "@/hooks/useTickets";
-import x_axios_crm from "@/lib/axiosCrm";
 import Link from "next/link";
 import useProfileClient from "@/lib/useProfileclient";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
@@ -16,7 +14,6 @@ const TicketsList = () => {
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const profile = useProfileClient();
   const axiosSecure = useAxiosSecure();
-
   const employeeId = profile?._id;
 
   // Priority and Status options
