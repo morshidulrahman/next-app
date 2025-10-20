@@ -3,7 +3,7 @@ import axios from "axios";
 import { cookies } from "next/headers";
 
 const x_axios_tracker = axios.create({
-  baseURL: process.env.API_TRACKER_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_TRACKER_URL,
   timeout: 0,
   withCredentials: true,
 });
