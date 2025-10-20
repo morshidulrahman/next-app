@@ -128,3 +128,20 @@ export const getTicetMessage = async (id) => {
     };
   }
 };
+
+export const getSingleTicetData = async (id) => {
+  try {
+    const response = await x_axios_crm.get(
+      `/api/v1/ticket/get-ticket-employee/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to get message",
+    };
+  }
+};
