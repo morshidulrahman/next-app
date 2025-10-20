@@ -6,13 +6,19 @@ import { toast } from "sonner";
 import PropTypes from "prop-types";
 import useAxiosSecure from "@/hooks/useAxiosSecure";
 import { searchDivisionsAction, searchTagsAction } from "@/actiions/ticket";
+import { getCookie } from "cookies-next/client";
 
 export const TicketsContext = createContext(null);
+
+
 
 const queryClient = new QueryClient();
 
 export const TicketsProvider = ({ children }) => {
+    const hasToken = !!getCookie("remote-ui-jwt");
+
   const axiosSecure = useAxiosSecure();
+
 
   // ------------STATES------------
   // Modal and UI states
@@ -114,6 +120,8 @@ export const TicketsProvider = ({ children }) => {
       );
       return data.data;
     },
+    enabled: hasToken,
+    refetchOnMount: true,
   });
 
   // Fetch all tickets - Updated to use debouncedGlobalSearch
@@ -164,6 +172,8 @@ export const TicketsProvider = ({ children }) => {
         },
       };
     },
+    enabled: hasToken,
+    refetchOnMount: true,
   });
 
   // search divisions
