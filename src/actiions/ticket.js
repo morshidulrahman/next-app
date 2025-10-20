@@ -145,3 +145,20 @@ export const getSingleTicetData = async (id) => {
     };
   }
 };
+
+export const getAllTicetList = async (id) => {
+  try {
+    const response = await x_axios_crm.get(
+      `api/v1/ticket/get-all/ticket-employee`
+    );
+    return response.data;
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to get message",
+    };
+  }
+};

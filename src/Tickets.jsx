@@ -8,7 +8,7 @@ import TicketStatsCards from "./components/Tickets/TicketStatsCards";
 import TicketsToolbar from "./components/Tickets/TicketsToolbar";
 import useTickets from "./hooks/useTickets";
 
-const Tickets = ({ employeeId }) => {
+const Tickets = () => {
   const {
     isFilterVisible,
     isLoadingTickets,

@@ -31,7 +31,7 @@ export const TicketsProvider = ({ children }) => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [globalSearch, setGlobalSearch] = useState("");
-  const [debouncedGlobalSearch, setDebouncedGlobalSearch] = useState(""); // Add debounced search state
+  const [debouncedGlobalSearch, setDebouncedGlobalSearch] = useState("");
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("desc");
   const [status, setStatus] = useState("");
